@@ -46,6 +46,8 @@ namespace OrderAPI.UnitTests
             //Assert
             Assert.IsTrue(customerResponseDto!=null);
             Assert.IsTrue(customerResponseDto.UserName == customerRequestDto.UserName);
+            Assert.IsTrue(customerResponseDto.CustomerId != null);
+
 
         }
 
@@ -133,6 +135,49 @@ namespace OrderAPI.UnitTests
             //Assert
             Assert.ThrowsAsync<CustomerNotAuthenticated>(() => _customerDal.AuthenticateCustomer(new CustomerRequestDto() { UserName = "UserTest", Password = "Invalid" }));
 
+
+        }
+        [Test]
+        public async Task GetCustomerById_InvalidCustomerId_Throws_InvalidCustomerRequestDtoException()
+        {
+
+            //Arrange
+            _customerDal = new CustomerDal(_dbApiContext, _mapper);
+            string customerId = "";
+            
+            //Assert
+            Assert.ThrowsAsync<InvalidCustomerRequestDtoException>(() => _customerDal.GetCustomerById(customerId));
+
+
+        }
+        [Test]
+        public async Task GetCustomerById_ValidCustomerId_Throws_CustomerNotExistException()
+        {
+
+            //Arrange
+            _customerDal = new CustomerDal(_dbApiContext, _mapper);
+            var customerRequestDto = new CustomerRequestDto() { UserName = "UserTest", Password = "PaswordTest" };
+
+            //Act
+            var customerResponseDto = await _customerDal.AddCustomer(customerRequestDto);
+            string ValidCustomerId = "123";
+            //Assert
+            Assert.ThrowsAsync<CustomerNotExistException>(() => _customerDal.GetCustomerById(ValidCustomerId));
+
+
+        }
+        [Test]
+        public async Task GetCustomerById_Returns_CustomerResponseDto()
+        {
+
+            //Arrange
+            _customerDal = new CustomerDal(_dbApiContext, _mapper);
+            var customerRequestDto = new CustomerRequestDto() { UserName = "UserTest", Password = "PaswordTest" };
+
+            //Act
+            var customerResponseDto  = await _customerDal.AddCustomer(customerRequestDto);
+            //Assert
+            Assert.IsTrue(await _customerDal.GetCustomerById(customerResponseDto.CustomerId) != null);
 
         }
     }

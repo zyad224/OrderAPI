@@ -8,6 +8,7 @@ namespace OrderAPI.Dtos.CustomerDtos
     public class CustomerResponseDto
     {
         public string UserName { get; set; }
+        public string CustomerId { get; set; }
         public string JwtToken { get; set; }
     }
 }

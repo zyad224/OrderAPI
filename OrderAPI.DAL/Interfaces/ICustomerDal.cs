@@ -1,4 +1,5 @@
-﻿using OrderAPI.Dtos.CustomerDtos;
+﻿using OrderAPI.DAL.Entities;
+using OrderAPI.Dtos.CustomerDtos;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,5 +11,6 @@ namespace OrderAPI.DAL.Interfaces
     {
         public Task<CustomerResponseDto> AddCustomer(CustomerRequestDto customerRequestDto);
         public Task<CustomerResponseDto> AuthenticateCustomer(CustomerRequestDto customerRequestDto);
+        public Task<CustomerResponseDto> GetCustomerById(string customerId);
     }
 }

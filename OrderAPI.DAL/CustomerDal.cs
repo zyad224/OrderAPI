@@ -79,5 +79,24 @@ namespace OrderAPI.DAL
             throw new CustomerNotAuthenticated("Customer Not Authenticated");
 
         }
+
+        public async Task<CustomerResponseDto> GetCustomerById(string customerId)
+        {
+            if (string.IsNullOrEmpty(customerId))         
+            {
+                throw new InvalidCustomerRequestDtoException("Invalid CustomerId");
+            }
+
+            var customer = await _dbContext.Customers.Where(customer => customer.CustomerId == customerId).FirstOrDefaultAsync();
+
+            if(customer == null)
+            {
+                throw new CustomerNotExistException("Customer does not Exists");
+            }
+
+            return _mapper.Map<CustomerResponseDto>(customer);
+
+        }
+
     }
 }
