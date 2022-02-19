@@ -16,6 +16,6 @@ namespace OrderAPI.DAL.Entities
         [Required(ErrorMessage = "Password is Required"), MaxLength(30)]
         public string Password { get; set; }
 
-        public List<Order> Orders { get; set; }
+        public List<Order> Orders { get; set; } = new List<Order>();
     }
 }

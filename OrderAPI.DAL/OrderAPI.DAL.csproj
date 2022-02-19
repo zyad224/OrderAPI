@@ -5,10 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.22" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\OrderAPI.Dtos\OrderAPI.Dtos.csproj" />
     <ProjectReference Include="..\OrderAPI.Utilities\OrderAPI.Utilities.csproj" />
   </ItemGroup>
 
