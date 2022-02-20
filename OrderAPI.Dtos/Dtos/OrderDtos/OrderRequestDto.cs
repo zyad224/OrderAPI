@@ -9,7 +9,7 @@ namespace OrderAPI.Dtos.Dtos.OrderDtos
     {
         [Required(ErrorMessage = "OrderId is Required"), MaxLength(30)]
         public string OrderId { get; set; }
-        [Required(ErrorMessage = "CustomerId is Required"), MaxLength(30)]
+        [Required(ErrorMessage = "CustomerId is Required"), MaxLength(60)]
         public string CustomerId { get; set; }
         [Required(ErrorMessage = "ProductTypesQuantities is Required")]
         public List<ProductTypeQuantityDto> ProductTypesQuantities { get; set; } = new List<ProductTypeQuantityDto>();

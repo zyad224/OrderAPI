@@ -9,7 +9,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using OrderAPI.DAL;
 using OrderAPI.DAL.Data;
+using OrderAPI.DAL.Interfaces;
+using OrderAPI.Services;
+using OrderAPI.Utilities.Extenstions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,13 +44,23 @@ namespace OrderAPI
                                 ValidateLifetime = true,
                                 ValidateIssuerSigningKey = true,
                                 ValidIssuer = Configuration["Jwt:Issuer"],
-                                ValidAudience = Configuration["Jwt:Issuer"],
+                                ValidAudience = Configuration["Jwt:Audience"],
                                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                            };
                    });
             services.AddDbContext<DbApiContext>(opt => opt.UseInMemoryDatabase("InMemoryDb"));
             services.AddScoped<IDbApiContext>(provider => (IDbApiContext)provider.GetService(typeof(DbApiContext)));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.AddTransient<IJwtService, JwtService>();
+            services.AddTransient<ICustomerService, CustomerService>();
+            services.AddTransient<IOrderService, OrderService>();
+
+            services.AddTransient<ICustomerDal, CustomerDal>();
+            services.AddTransient<IOrderDal, OrderDal>();
+
+
+
             services.AddControllers();
         }
 
@@ -59,12 +73,11 @@ namespace OrderAPI
             }
 
             app.UseHttpsRedirection();
-
-            app.UseRouting();
-
             app.UseAuthentication();
-
+            app.UseRouting();
             app.UseAuthorization();
+
+
 
             app.UseEndpoints(endpoints =>
             {

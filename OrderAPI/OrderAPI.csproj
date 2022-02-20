@@ -13,10 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OrderAPI.DAL\OrderAPI.DAL.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\OrderAPI.Services\OrderAPI.Services.csproj" />
   </ItemGroup>
 
 
