@@ -138,7 +138,7 @@ namespace OrderAPI.UnitTests
 
         }
         [Test]
-        public async Task GetCustomerById_InvalidCustomerId_Throws_InvalidCustomerRequestDtoException()
+        public void GetCustomerById_InvalidCustomerId_Throws_InvalidCustomerRequestDtoException()
         {
 
             //Arrange

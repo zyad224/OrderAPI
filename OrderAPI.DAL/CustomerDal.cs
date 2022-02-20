@@ -70,13 +70,14 @@ namespace OrderAPI.DAL
                 .Where(customer => customer.UserName == customerRequestDto.UserName && customer.Password == customerRequestDto.Password)
                 .FirstOrDefaultAsync();
 
-            if(customer != null)
+            if(customer == null)
             {
-                return _mapper.Map<CustomerResponseDto>(customer);
-
+                throw new CustomerNotAuthenticated("Customer Not Authenticated");
             }
 
-            throw new CustomerNotAuthenticated("Customer Not Authenticated");
+            return _mapper.Map<CustomerResponseDto>(customer);
+
+
 
         }
 
