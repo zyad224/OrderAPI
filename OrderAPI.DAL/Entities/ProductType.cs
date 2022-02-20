@@ -8,8 +8,9 @@ namespace OrderAPI.DAL.Entities
     {
         NoProductType = 0,
         photoBook = 1,
-        canvas = 2,
-        cards = 3,
-        mug = 4
+        calendar = 2,
+        canvas = 3,
+        cards = 4,
+        mug = 5
     }
 }

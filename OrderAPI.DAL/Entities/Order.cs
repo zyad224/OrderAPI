@@ -9,6 +9,7 @@ namespace OrderAPI.DAL.Entities
     public class Order: EntityBase
     {
         [Key]
+        [Required(ErrorMessage = "OrderId is Required"), MaxLength(30)]
         public string OrderId { get; set; }
 
         public List<ProductTypeQuantity> ProductTypesQuantities { get; set; } = new List<ProductTypeQuantity>();
@@ -16,6 +17,7 @@ namespace OrderAPI.DAL.Entities
         public decimal RequiredBinWidth { get; set; }
 
         [ForeignKey("CustomerId")]
+        [Required(ErrorMessage = "CustomerId is Required"), MaxLength(30)]
         public string CustomerId { get; set; }
         public Customer Customer { get; set; }
     }
