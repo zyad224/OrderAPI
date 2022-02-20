@@ -25,7 +25,7 @@ namespace OrderAPI.Services
             var token = new JwtSecurityToken(_configuration["Jwt:Issuer"],
               _configuration["Jwt:Audience"],
               null,
-              expires: DateTime.Now.AddMinutes(60),
+              expires: DateTime.UtcNow.AddMinutes(60),
               signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
