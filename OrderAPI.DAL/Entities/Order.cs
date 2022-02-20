@@ -17,7 +17,7 @@ namespace OrderAPI.DAL.Entities
         public decimal RequiredBinWidth { get; set; }
 
         [ForeignKey("CustomerId")]
-        [Required(ErrorMessage = "CustomerId is Required"), MaxLength(30)]
+        [Required(ErrorMessage = "CustomerId is Required"), MaxLength(60)]
         public string CustomerId { get; set; }
         public Customer Customer { get; set; }
     }

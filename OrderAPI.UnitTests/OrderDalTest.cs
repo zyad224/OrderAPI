@@ -98,7 +98,7 @@ namespace OrderAPI.UnitTests
             Assert.ThrowsAsync<CustomerNotExistException>(() => _orderDal.PlaceOrder(orderRequestDto, requiredBinWidth));
         }
         [Test]
-        public async Task PlaceOrder_ValidOrder_ValidCustomer_Returns_CustomerNotExistException()
+        public async Task PlaceOrder_ValidOrder_ValidCustomer_Returns_OrderResponseDto()
         {
 
             //Arrange
@@ -137,6 +137,48 @@ namespace OrderAPI.UnitTests
 
             //Assert
             Assert.ThrowsAsync<InvalidOrderBinWidthException>(() => _orderDal.PlaceOrder(orderRequestDto, requiredBinWidth));
+        }
+
+        [Test]
+        public void OrderDetail_InvalidOrder_Returns_OrderNotExistException()
+        {
+
+            //Arrange
+            _customerDal = new CustomerDal(_dbApiContext, _mapper);
+            _orderDal = new OrderDal(_dbApiContext, _mapper, _customerDal);
+
+            //Act
+            string orderId = "inValid";
+
+            //Assert
+            Assert.ThrowsAsync<OrderNotExistException>(() => _orderDal.OrderDetail(orderId));
+        }
+
+        [Test]
+        public async Task OrderDetail_ValidOrder_ValidCustomer_Returns_OrderRespondeDto()
+        {
+
+            //Arrange
+            _customerDal = new CustomerDal(_dbApiContext, _mapper);
+            _orderDal = new OrderDal(_dbApiContext, _mapper, _customerDal);
+
+            //Act
+            var customerRequestDto = new CustomerRequestDto() { UserName = "UserTest", Password = "PaswordTest" };
+            var customerResponseDto = await _customerDal.AddCustomer(customerRequestDto);
+
+            var orderRequestDto = new OrderRequestDto() { OrderId = "1", CustomerId = customerResponseDto.CustomerId, };
+            orderRequestDto.ProductTypesQuantities.Add(new ProductTypeQuantityDto() { ProductType = ProductTypeDto.photoBook, Quantity = 1 });
+            decimal requiredBinWidth = 10;
+            var orderResponseDto = await _orderDal.PlaceOrder(orderRequestDto, requiredBinWidth);
+
+            var orderDetails = await _orderDal.OrderDetail(orderRequestDto.OrderId);
+            //Assert
+
+            Assert.IsTrue(orderDetails != null);
+            Assert.IsTrue(orderDetails.RequiredBinWidth == requiredBinWidth);
+            Assert.IsTrue(orderDetails.ProductTypesQuantities.Count() == 1);
+            Assert.IsTrue(orderDetails.ProductTypesQuantities.FirstOrDefault().ProductType == ProductTypeDto.photoBook);
+            Assert.IsTrue(orderDetails.ProductTypesQuantities.FirstOrDefault().Quantity == 1);
         }
     }
 }

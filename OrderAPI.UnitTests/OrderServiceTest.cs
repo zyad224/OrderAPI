@@ -12,6 +12,7 @@ using OrderAPI.Services;
 using OrderAPI.Utilities.CustomExceptions.OrderExceptions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -293,6 +294,60 @@ namespace OrderAPI.UnitTests
 
             Assert.IsTrue(orderResponseDto != null);
             Assert.IsTrue(orderResponseDto.OrderId == orderResponseDto.OrderId);
+        }
+        [Test]
+        public void OrderDetail_InvalidOrder_Returns_OrderNotExistException()
+        {
+
+            //Arrange
+            _customerDal = new CustomerDal(_dbApiContext, _mapper);
+            _orderDal = new OrderDal(_dbApiContext, _mapper, _customerDal);
+            _orderService = new OrderService(_orderDal, _configuration);
+
+            //Act
+            var orderRequestDto = new OrderRequestDto() { OrderId = "1", CustomerId = "123", };
+
+            orderRequestDto.ProductTypesQuantities
+             .Add(
+             new ProductTypeQuantityDto() { ProductType = ProductTypeDto.mug, Quantity = 1 }
+             );
+
+            decimal requiredBinWidth = 0;
+
+            //Assert
+            Assert.ThrowsAsync<OrderNotExistException>(() => _orderService.OrderDetail(orderRequestDto.OrderId));
+        }
+        [Test]
+        public async Task OrderDetail_ValidOrder_Returns_OrderResponseDto()
+        {
+
+            //Arrange
+            _customerDal = new CustomerDal(_dbApiContext, _mapper);
+            _orderDal = new OrderDal(_dbApiContext, _mapper, _customerDal);
+            _orderService = new OrderService(_orderDal, _configuration);
+
+            //Act
+            var customerRequestDto = new CustomerRequestDto() { UserName = "UserTest", Password = "PaswordTest" };
+            var customerResponseDto = await _customerDal.AddCustomer(customerRequestDto);
+            var orderRequestDto = new OrderRequestDto() { OrderId = "1", CustomerId = customerResponseDto.CustomerId, };
+            orderRequestDto.ProductTypesQuantities
+             .Add(
+             new ProductTypeQuantityDto() { ProductType = ProductTypeDto.photoBook, Quantity = 1 }
+             );
+
+            var requiredBinWidth = _orderService.CalculateOrderBinWidth(orderRequestDto);
+            var orderResponseDto = await _orderService.PlaceOrder(orderRequestDto, requiredBinWidth);
+
+            var orderDetails = await _orderService.OrderDetail(orderRequestDto.OrderId);
+
+            //Assert
+
+            Assert.IsTrue(orderDetails != null);
+            Assert.IsTrue(orderDetails.OrderId == orderRequestDto.OrderId);
+            Assert.IsTrue(orderDetails.RequiredBinWidth == requiredBinWidth);
+            Assert.IsTrue(orderDetails.ProductTypesQuantities.Count() == 1);
+            Assert.IsTrue(orderDetails.ProductTypesQuantities.FirstOrDefault().ProductType == ProductTypeDto.photoBook);
+            Assert.IsTrue(orderDetails.ProductTypesQuantities.FirstOrDefault().Quantity == 1);
         }
 
     }

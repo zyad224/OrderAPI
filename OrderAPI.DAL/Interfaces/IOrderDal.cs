@@ -10,5 +10,7 @@ namespace OrderAPI.DAL.Interfaces
     {
         public Task<OrderResponseDto> PlaceOrder(OrderRequestDto orderRequestDto,decimal requiredBinWidth);
 
+        public Task<OrderResponseDto> OrderDetail(string orderId);
+
     }
 }

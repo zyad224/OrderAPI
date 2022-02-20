@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using OrderAPI.DAL.Data;
 using OrderAPI.DAL.Entities;
@@ -10,6 +11,7 @@ using OrderAPI.Utilities.CustomExceptions.CustomerExceptions;
 using OrderAPI.Utilities.CustomExceptions.OrderExceptions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -42,6 +44,15 @@ namespace OrderAPI.DAL
             {
                 throw new InvalidOrderBinWidthException("Invalid Order Bin Width");
             }
+
+
+            var orderAlreadyExist = await _dbContext.Orders.Where(order => order.OrderId == orderRequestDto.OrderId).FirstOrDefaultAsync();
+
+            if (orderAlreadyExist != null)
+            {
+                throw new OrderAlreadyExistException("Order Already Exist");
+            }
+
             try
             {
                 var customer = await _customerDal.GetCustomerById(orderRequestDto.CustomerId);
@@ -68,6 +79,24 @@ namespace OrderAPI.DAL
             }
         }
 
-      
+        public async Task<OrderResponseDto> OrderDetail(string orderId)
+        {
+
+            var order = await _dbContext.Orders.Where(order => order.OrderId == orderId)
+                              .Include(order => order.ProductTypesQuantities)
+                              .Include(order => order.Customer)
+                              .FirstOrDefaultAsync();
+
+            if(order == null)
+            {
+                throw new OrderNotExistException("Order Not Exist");
+            }
+
+            return _mapper.Map<OrderResponseDto>(order);
+
+        }
+
+
+
     }
 }

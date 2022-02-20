@@ -95,5 +95,18 @@ namespace OrderAPI.Services
                 throw e;
             }
         }
+
+        public async Task<OrderResponseDto> OrderDetail(string orderId)
+        {
+            try
+            {
+                return await _orderDal.OrderDetail(orderId);
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
+        }
+
     }
 }
