@@ -8,6 +8,8 @@ namespace OrderAPI.Dtos.Dtos.OrderDtos
     {
         public List<ProductTypeQuantityDto> ProductTypesQuantities { get; set; }
         public decimal RequiredBinWidth { get; set; }
+        public string OrderId { get; set; }
+
 
     }
 }

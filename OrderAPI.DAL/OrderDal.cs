@@ -31,22 +31,25 @@ namespace OrderAPI.DAL
         public async Task<OrderResponseDto> PlaceOrder(OrderRequestDto orderRequestDto, decimal requiredBinWidth)
         {
             if ((string.IsNullOrEmpty(orderRequestDto.OrderId) 
-                || string.IsNullOrEmpty(orderRequestDto.CustomerId)
-                || requiredBinWidth == 0
+                || string.IsNullOrEmpty(orderRequestDto.CustomerId)               
                 || orderRequestDto.ProductTypesQuantities == null)
                 || orderRequestDto.ProductTypesQuantities.Count == 0)
             {
                 throw new InvalidOrderRequestDtoException("Invalid OrderRequestDto Model");
             }
 
+            if(requiredBinWidth <= 0)
+            {
+                throw new InvalidOrderBinWidthException("Invalid Order Bin Width");
+            }
             try
             {
                 var customer = await _customerDal.GetCustomerById(orderRequestDto.CustomerId);
 
             }
-            catch(CustomerNotExistException)
+            catch(Exception e)
             {
-                throw new CustomerNotExistException("Customer does not Exists");
+                throw e;
 
             }
 
