@@ -65,21 +65,7 @@ namespace OrderAPI.UnitTests
             //Assert
             Assert.ThrowsAsync<InvalidOrderRequestDtoException>(() => _orderDal.PlaceOrder(orderRequestDto, requiredBinWidth));
         }
-        [Test]
-        public void PlaceOrder_InvalidRequiredBinWidth_Returns_InvalidOrderRequestDtoException()
-        {
-
-            //Arrange
-            _customerDal = new CustomerDal(_dbApiContext, _mapper);
-            _orderDal = new OrderDal(_dbApiContext, _mapper, _customerDal);
-
-            //Act
-            var orderRequestDto = new OrderRequestDto() { OrderId = "1", CustomerId = "123", };
-            decimal requiredBinWidth = 0;
-
-            //Assert
-            Assert.ThrowsAsync<InvalidOrderRequestDtoException>(() => _orderDal.PlaceOrder(orderRequestDto, requiredBinWidth));
-        }
+       
         [Test]
         public void PlaceOrder_InvalidProductTypesQuantities_Returns_InvalidOrderRequestDtoException()
         {
@@ -135,5 +121,22 @@ namespace OrderAPI.UnitTests
             Assert.IsTrue(orderResponseDto.ProductTypesQuantities.FirstOrDefault().ProductType == ProductTypeDto.photoBook);
             Assert.IsTrue(orderResponseDto.ProductTypesQuantities.FirstOrDefault().Quantity == 1);
       }
+        [Test]
+        public void PlaceOrder_InvalidRequiredBinWidth_Returns_InvalidOrderRequestDtoException()
+        {
+
+            //Arrange
+            _customerDal = new CustomerDal(_dbApiContext, _mapper);
+            _orderDal = new OrderDal(_dbApiContext, _mapper, _customerDal);
+
+            //Act
+            var orderRequestDto = new OrderRequestDto() { OrderId = "1", CustomerId = "123", };
+            orderRequestDto.ProductTypesQuantities.Add(new ProductTypeQuantityDto() { ProductType = ProductTypeDto.photoBook, Quantity = 1 });
+
+            decimal requiredBinWidth = 0;
+
+            //Assert
+            Assert.ThrowsAsync<InvalidOrderBinWidthException>(() => _orderDal.PlaceOrder(orderRequestDto, requiredBinWidth));
+        }
     }
 }
