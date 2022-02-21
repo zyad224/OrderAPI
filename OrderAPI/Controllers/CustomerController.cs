@@ -26,6 +26,24 @@ namespace OrderAPI.Controllers
             _jwtService = jwtService;
         }
 
+        /// <summary>
+        /// Register New Customer.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST api/Customer/Register
+        ///     {        
+        ///       "UserName": "Zyad",
+        ///       "Password": "123"
+        ///     }
+        /// </remarks>
+        /// <returns> New CustomerResponseDto</returns>
+        /// /// <response code="200"> New CustomerResponseDto</response>
+        /// <response code="400">Invalid CustomerRequestDto</response> 
+        /// <response code="400">Customer Already Exist</response> 
+        /// <response code="500">Internal Server Error</response> 
+        // POST: api/Customer/Register
         [HttpPost]
         [Route("Register")]
         public async Task<ActionResult<CustomerResponseDto>> Register([FromBody] CustomerRequestDto customerRequestDto)
@@ -56,6 +74,23 @@ namespace OrderAPI.Controllers
 
         }
 
+        /// <summary>
+        /// Registered Customer Login.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST api/Customer/Login
+        ///     {        
+        ///       "UserName": "Zyad",
+        ///       "Password": "123"
+        ///     }
+        /// </remarks>
+        /// <returns> Logged CustomerResponseDto</returns>
+        /// /// <response code="200"> Logged CustomerResponseDto</response>
+        /// <response code="400">Invalid CustomerRequestDto</response> 
+        /// <response code="403">Customer Not Authenticated</response> 
+        // POST: api/Customer/Login
         [HttpPost]
         [Route("Login")]
         public async Task<ActionResult<CustomerResponseDto>> Login([FromBody] CustomerRequestDto customerRequestDto)

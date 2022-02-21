@@ -24,6 +24,36 @@ namespace OrderAPI.Controllers
             _orderService = orderService;
         }
 
+        /// <summary>
+        /// PlaceOrder for Authorized Customers (JWT).
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Post api/Order/PlaceOrder
+        ///     {        
+        ///           "OrderId": "3",
+        ///           "CustomerId": "4b2ed032-ffff-4699-93eb-0e4aa2f5e211",
+        ///           "ProductTypesQuantities": [
+        ///              {
+        ///                "ProductType": 1,
+        ///                "Quantity": 1
+        ///              },
+        ///              {
+        ///              "ProductType": 2,
+        ///              "Quantity": 1
+        ///              }
+        ///          ]
+        ///     }
+        /// </remarks>
+        /// <returns> New OrderResponseDto</returns>
+        /// /// <response code="200"> New OrderResponseDto</response>
+        /// <response code="400">Invalid OrderRequestDto Model</response>
+        /// <response code="400">Invalid OrderBin Width</response> 
+        /// <response code="400">Customer Does not Exist</response>
+        /// <response code="400">Order Already Exist</response>
+        /// <response code="500">Internal Server Error</response> 
+        // POST: api/Order/PlaceOrder
         [HttpPost]
         [Authorize]
         [Route("PlaceOrder")]
@@ -71,6 +101,21 @@ namespace OrderAPI.Controllers
 
         }
 
+        /// <summary>
+        /// Get Order Detail.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET api/Order/OrderDetail
+        ///     {        
+        ///       "orderId": "10"
+        ///     }
+        /// </remarks>
+        /// <returns> New OrderResponseDto</returns>
+        /// /// <response code="200"> New OrderResponseDto</response>
+        /// <response code="400">Order Not Exist</response>        
+        // GET: api/Order/OrderDetail
         [HttpGet]
         [Route("OrderDetail")]
         public async Task<ActionResult<OrderResponseDto>> OrderDetail([FromQuery] string orderId)
