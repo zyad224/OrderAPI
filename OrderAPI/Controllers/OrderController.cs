@@ -37,6 +37,11 @@ namespace OrderAPI.Controllers
                 return StatusCode(200, orderResponseDto);
 
             }
+            catch (InvalidOrderRequestDtoException)
+            {
+                return StatusCode(400, "Invalid OrderRequestDto Model");
+
+            }
             catch (InvalidOrderBinWidthException)
             {
                 return StatusCode(400, "Invalid OrderBin Width");

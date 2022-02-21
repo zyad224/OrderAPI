@@ -37,6 +37,11 @@ namespace OrderAPI.Controllers
                 return StatusCode(200, customerResponseDto);
 
             }
+            catch (InvalidCustomerRequestDtoException)
+            {
+                return StatusCode(400, "Invalid CustomerRequestDto");
+
+            }
             catch (CustomerAlreadyExistException)
             {
                 return StatusCode(400, "Customer Already Exist");
@@ -62,7 +67,12 @@ namespace OrderAPI.Controllers
                 customerResponseDto.JwtToken = _jwtService.GenerateJWT();
                 return StatusCode(200, customerResponseDto);
                 
-            }          
+            }
+            catch (InvalidCustomerRequestDtoException)
+            {
+                return StatusCode(400, "Invalid CustomerRequestDto");
+
+            }
             catch (CustomerNotAuthenticated)
             {
                 return StatusCode(403, "Customer Not Authenticated");
