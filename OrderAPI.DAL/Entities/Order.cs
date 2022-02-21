@@ -12,13 +12,13 @@ namespace OrderAPI.DAL.Entities
         [Required(ErrorMessage = "OrderId is Required"), MaxLength(30)]
         public string OrderId { get; set; }
 
-        public List<ProductTypeQuantity> ProductTypesQuantities { get; set; } = new List<ProductTypeQuantity>();
+        public virtual List<ProductTypeQuantity> ProductTypesQuantities { get; set; } = new List<ProductTypeQuantity>();
 
         public decimal RequiredBinWidth { get; set; }
 
         [ForeignKey("CustomerId")]
         [Required(ErrorMessage = "CustomerId is Required"), MaxLength(60)]
         public string CustomerId { get; set; }
-        public Customer Customer { get; set; }
+        public virtual Customer Customer { get; set; }
     }
 }
