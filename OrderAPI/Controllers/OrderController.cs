@@ -49,10 +49,6 @@ namespace OrderAPI.Controllers
         /// <returns> New OrderResponseDto</returns>
         /// /// <response code="200"> New OrderResponseDto</response>
         /// <response code="400">Invalid OrderRequestDto Model</response>
-        /// <response code="400">Invalid OrderBin Width</response> 
-        /// <response code="400">Customer Does not Exist</response>
-        /// <response code="400">Order Already Exist</response>
-        /// <response code="500">Internal Server Error</response> 
         // POST: api/Order/PlaceOrder
         [HttpPost]
         [Authorize]
@@ -60,45 +56,13 @@ namespace OrderAPI.Controllers
         public async Task<ActionResult<OrderResponseDto>> PlaceOrder([FromBody] OrderRequestDto orderRequestDto)
         {
 
-            try
-            {
-                var orderBinWidth = _orderService.CalculateOrderBinWidth(orderRequestDto);
-                var orderResponseDto = await _orderService.PlaceOrder(orderRequestDto, orderBinWidth);
-                return StatusCode(200, orderResponseDto);
+            if (!ModelState.IsValid)
+                return StatusCode(400, "Invalid OrderRequestDto");
 
-            }
-            catch (InvalidOrderRequestDtoException)
-            {
-                return StatusCode(400, "Invalid OrderRequestDto Model");
-
-            }
-            catch (InvalidOrderBinWidthException)
-            {
-                return StatusCode(400, "Invalid OrderBin Width");
-
-            }
-            catch (CustomerNotExistException)
-            {
-                return StatusCode(400, "Customer Does not Exist");
-
-            }
-            catch (OrderAlreadyExistException)
-            {
-                return StatusCode(400, "Order Already Exist");
-
-            }
-            catch (ArgumentNullException)
-            {
-                return StatusCode(500, "Internal Server Error");
-
-            }
-            catch (DatabaseSaveException)
-            {
-                return StatusCode(500, "Internal Server Error");
-
-            }
-         
-
+            var orderBinWidth = _orderService.CalculateOrderBinWidth(orderRequestDto);
+            var orderResponseDto = await _orderService.PlaceOrder(orderRequestDto, orderBinWidth);
+            return StatusCode(200, orderResponseDto);
+       
         }
 
         /// <summary>
@@ -121,17 +85,12 @@ namespace OrderAPI.Controllers
         public async Task<ActionResult<OrderResponseDto>> OrderDetail([FromQuery] string orderId)
         {
 
-            try
-            {
-                var orderResponseDto = await _orderService.OrderDetail(orderId);
-                return StatusCode(200, orderResponseDto);
-
-            }
-            catch (OrderNotExistException)
-            {
+            if (string.IsNullOrEmpty(orderId))
                 return StatusCode(400, "Order Not Exist");
 
-            }
+            var orderResponseDto = await _orderService.OrderDetail(orderId);
+            return StatusCode(200, orderResponseDto);
+          
         }
     }
 }
