@@ -14,6 +14,7 @@ namespace OrderAPI.DAL.Entities
 
         public ProductType ProductType { get; set; }
 
+        [Range(1, int.MaxValue, ErrorMessage = "Please enter postive value")]
         public int Quantity { get; set; }
 
         [ForeignKey("OrderId")]

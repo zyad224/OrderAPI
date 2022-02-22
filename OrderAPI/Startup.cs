@@ -65,12 +65,12 @@ namespace OrderAPI
             services.AddScoped<IDbApiContext>(provider => (IDbApiContext)provider.GetService(typeof(DbApiContext)));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            services.AddTransient<IJwtService, JwtService>();
-            services.AddTransient<ICustomerService, CustomerService>();
-            services.AddTransient<IOrderService, OrderService>();
+            services.AddScoped<IJwtService, JwtService>();
+            services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped<IOrderService, OrderService>();
 
-            services.AddTransient<ICustomerDal, CustomerDal>();
-            services.AddTransient<IOrderDal, OrderDal>();
+            services.AddScoped<ICustomerDal, CustomerDal>();
+            services.AddScoped<IOrderDal, OrderDal>();
 
             services.AddSwaggerGen(c =>
             {
