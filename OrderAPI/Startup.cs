@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +15,7 @@ using OrderAPI.DAL;
 using OrderAPI.DAL.Data;
 using OrderAPI.DAL.Interfaces;
 using OrderAPI.Services;
+using OrderAPI.Utilities.CustomExceptions;
 using OrderAPI.Utilities.Extenstions;
 using System;
 using System.Collections.Generic;
@@ -37,6 +39,14 @@ namespace OrderAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddMvc(
+                config =>
+                {
+                    config.Filters.Add(typeof(CustomExceptionHandler));
+                }
+            ).AddFluentValidation();
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
                    {
@@ -101,8 +111,8 @@ namespace OrderAPI
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "OrderAPI V1");
             });
             app.UseHttpsRedirection();
-            app.UseAuthentication();
             app.UseRouting();
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {

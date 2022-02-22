@@ -10,6 +10,8 @@ using OrderAPI.DAL.Data;
 using OrderAPI.DAL.Interfaces;
 using OrderAPI.Dtos.CustomerDtos;
 using OrderAPI.Services;
+using OrderAPI.Utilities.CustomExceptions;
+using OrderAPI.Utilities.CustomExceptions.CustomerExceptions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -45,7 +47,7 @@ namespace OrderAPI.IntegrationTests
         }
 
         [Test]
-        public async Task RegisterEndPoint_BadCustomerUsername_Returns_400_InvalidCustomerRequestDto()
+        public void RegisterEndPoint_BadCustomerUsername_Returns_400_InvalidCustomerRequestDto()
         {
 
             //Arrange
@@ -56,18 +58,13 @@ namespace OrderAPI.IntegrationTests
 
             //Act
             var customerRequestDto = new CustomerRequestDto() { UserName = "", Password = "PaswordTest" };
-            var customerResponseDto = await customerController.Register(customerRequestDto);
-            var requestResponseStatusCode= (customerResponseDto.Result as ObjectResult).StatusCode ;
-            var requestResponse = (customerResponseDto.Result as ObjectResult).Value;
-
 
             //Assert
-            Assert.IsTrue(requestResponseStatusCode == 400);
-            Assert.IsTrue(requestResponse.ToString() == "Invalid CustomerRequestDto");
-
+            Assert.ThrowsAsync<InvalidCustomerRequestDtoException>(() => customerController.Register(customerRequestDto));
+       
         }
         [Test]
-        public async Task RegisterEndPoint_BadCustomerPassword_Returns_400_InvalidCustomerRequestDto()
+        public void RegisterEndPoint_BadCustomerPassword_Returns_400_InvalidCustomerRequestDto()
         {
 
             //Arrange
@@ -78,14 +75,10 @@ namespace OrderAPI.IntegrationTests
 
             //Act
             var customerRequestDto = new CustomerRequestDto() { UserName = "UserTest", Password = "" };
-            var customerResponseDto = await customerController.Register(customerRequestDto);
-            var requestResponseStatusCode = (customerResponseDto.Result as ObjectResult).StatusCode;
-            var requestResponse = (customerResponseDto.Result as ObjectResult).Value;
-
 
             //Assert
-            Assert.IsTrue(requestResponseStatusCode == 400);
-            Assert.IsTrue(requestResponse.ToString() == "Invalid CustomerRequestDto");
+            Assert.ThrowsAsync<InvalidCustomerRequestDtoException>(() => customerController.Register(customerRequestDto));
+
 
         }
         [Test]
@@ -125,18 +118,14 @@ namespace OrderAPI.IntegrationTests
             var customerRequestDto = new CustomerRequestDto() { UserName = "UserTest", Password = "PaswordTest" };
             var customerResponseDto = await customerController.Register(customerRequestDto);
 
-            var customerReRegisterResponseDto = await customerController.Register(customerRequestDto);
-            var requestResponseStatusCode = (customerReRegisterResponseDto.Result as ObjectResult).StatusCode;
-            var requestResponse = (customerReRegisterResponseDto.Result as ObjectResult).Value;
-
 
             //Assert
-            Assert.IsTrue(requestResponseStatusCode == 400);
-            Assert.IsTrue(requestResponse.ToString() == "Customer Already Exist");
+            Assert.ThrowsAsync<CustomerAlreadyExistException>(() => customerController.Register(customerRequestDto));
+
 
         }
         [Test]
-        public async Task LoginEndPoint_BadCustomerUserName_Returns_400_InvalidCustomerRequestDto()
+        public void LoginEndPoint_BadCustomerUserName_Returns_400_InvalidCustomerRequestDto()
         {
 
             //Arrange
@@ -147,18 +136,14 @@ namespace OrderAPI.IntegrationTests
 
             //Act
             var customerRequestDto = new CustomerRequestDto() { UserName = "", Password = "Password" };
-            var customerResponseDto = await customerController.Login(customerRequestDto);
-            var requestResponseStatusCode = (customerResponseDto.Result as ObjectResult).StatusCode;
-            var requestResponse = (customerResponseDto.Result as ObjectResult).Value;
-
 
             //Assert
-            Assert.IsTrue(requestResponseStatusCode == 400);
-            Assert.IsTrue(requestResponse.ToString() == "Invalid CustomerRequestDto");
+            Assert.ThrowsAsync<InvalidCustomerRequestDtoException>(() => customerController.Login(customerRequestDto));
+
 
         }
         [Test]
-        public async Task LoginEndPoint_BadCustomerPassword_Returns_400_InvalidCustomerRequestDto()
+        public void LoginEndPoint_BadCustomerPassword_Returns_400_InvalidCustomerRequestDto()
         {
 
             //Arrange
@@ -169,14 +154,10 @@ namespace OrderAPI.IntegrationTests
 
             //Act
             var customerRequestDto = new CustomerRequestDto() { UserName = "UserTest", Password = "" };
-            var customerResponseDto = await customerController.Login(customerRequestDto);
-            var requestResponseStatusCode = (customerResponseDto.Result as ObjectResult).StatusCode;
-            var requestResponse = (customerResponseDto.Result as ObjectResult).Value;
-
 
             //Assert
-            Assert.IsTrue(requestResponseStatusCode == 400);
-            Assert.IsTrue(requestResponse.ToString() == "Invalid CustomerRequestDto");
+            Assert.ThrowsAsync<InvalidCustomerRequestDtoException>(() => customerController.Login(customerRequestDto));
+
 
         }
         [Test]
@@ -194,15 +175,11 @@ namespace OrderAPI.IntegrationTests
             var customerResponseDto = await customerController.Register(customerRequestDto);
 
             var customerLoginRequestDto = new CustomerRequestDto() { UserName = "UserTest1", Password = "Password" };
-            var customerLoginResponseDto = await customerController.Login(customerLoginRequestDto);
-
-            var requestResponseStatusCode = (customerLoginResponseDto.Result as ObjectResult).StatusCode;
-            var requestResponse = (customerLoginResponseDto.Result as ObjectResult).Value;
 
 
             //Assert
-            Assert.IsTrue(requestResponseStatusCode == 403);
-            Assert.IsTrue(requestResponse.ToString() == "Customer Not Authenticated");
+            Assert.ThrowsAsync<CustomerNotAuthenticated>(() => customerController.Login(customerLoginRequestDto));
+
 
         }
         [Test]
@@ -220,15 +197,10 @@ namespace OrderAPI.IntegrationTests
             var customerResponseDto = await customerController.Register(customerRequestDto);
 
             var customerLoginRequestDto = new CustomerRequestDto() { UserName = "UserTest", Password = "Password1" };
-            var customerLoginResponseDto = await customerController.Login(customerLoginRequestDto);
-
-            var requestResponseStatusCode = (customerLoginResponseDto.Result as ObjectResult).StatusCode;
-            var requestResponse = (customerLoginResponseDto.Result as ObjectResult).Value;
-
 
             //Assert
-            Assert.IsTrue(requestResponseStatusCode == 403);
-            Assert.IsTrue(requestResponse.ToString() == "Customer Not Authenticated");
+            Assert.ThrowsAsync<CustomerNotAuthenticated>(() => customerController.Login(customerLoginRequestDto));
+
 
         }
         [Test]

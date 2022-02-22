@@ -5,23 +5,23 @@
     </assembly>
     <members>
         <member name="M:OrderAPI.Controllers.CustomerController.Register(OrderAPI.Dtos.CustomerDtos.CustomerRequestDto)">
-            <summary>
-            Register New Customer.
-            </summary>
-            <remarks>
-            Sample request:
+             <summary>
+             Register New Customer.
+             </summary>
+             <remarks>
+             Sample request:
+             
+                 POST api/Customer/Register
+                 {        
+                   "UserName": "Zyad",
+                   "Password": "123"
+                 }
+             </remarks>
+             <returns> New CustomerResponseDto</returns>
+             /// <response code="200"> New CustomerResponseDto</response>
+             <response code="400">Invalid CustomerRequestDto</response> 
             
-                POST api/Customer/Register
-                {        
-                  "UserName": "Zyad",
-                  "Password": "123"
-                }
-            </remarks>
-            <returns> New CustomerResponseDto</returns>
-            /// <response code="200"> New CustomerResponseDto</response>
-            <response code="400">Invalid CustomerRequestDto</response> 
-            <response code="400">Customer Already Exist</response> 
-            <response code="500">Internal Server Error</response> 
+              
         </member>
         <member name="M:OrderAPI.Controllers.CustomerController.Login(OrderAPI.Dtos.CustomerDtos.CustomerRequestDto)">
             <summary>
@@ -67,10 +67,6 @@
             <returns> New OrderResponseDto</returns>
             /// <response code="200"> New OrderResponseDto</response>
             <response code="400">Invalid OrderRequestDto Model</response>
-            <response code="400">Invalid OrderBin Width</response> 
-            <response code="400">Customer Does not Exist</response>
-            <response code="400">Order Already Exist</response>
-            <response code="500">Internal Server Error</response> 
         </member>
         <member name="M:OrderAPI.Controllers.OrderController.OrderDetail(System.String)">
             <summary>

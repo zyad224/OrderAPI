@@ -53,16 +53,7 @@ namespace OrderAPI.DAL
                 throw new OrderAlreadyExistException("Order Already Exist");
             }
 
-            try
-            {
-                var customer = await _customerDal.GetCustomerById(orderRequestDto.CustomerId);
-
-            }
-            catch(Exception e)
-            {
-                throw e;
-
-            }
+            var customer = await _customerDal.GetCustomerById(orderRequestDto.CustomerId);
 
             var order = _mapper.Map<Order>(orderRequestDto);
             order.RequiredBinWidth = requiredBinWidth;
