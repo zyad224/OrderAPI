@@ -41,36 +41,19 @@ namespace OrderAPI.Controllers
         /// <returns> New CustomerResponseDto</returns>
         /// /// <response code="200"> New CustomerResponseDto</response>
         /// <response code="400">Invalid CustomerRequestDto</response> 
-        /// <response code="400">Customer Already Exist</response> 
-        /// <response code="500">Internal Server Error</response> 
+        ///
+        ///  
         // POST: api/Customer/Register
         [HttpPost]
         [Route("Register")]
         public async Task<ActionResult<CustomerResponseDto>> Register([FromBody] CustomerRequestDto customerRequestDto)
         {
            
-            try
-            {
-                var customerResponseDto = await _customerService.AddCustomer(customerRequestDto);
-                return StatusCode(200, customerResponseDto);
-
-            }
-            catch (InvalidCustomerRequestDtoException)
-            {
+          if (!ModelState.IsValid)
                 return StatusCode(400, "Invalid CustomerRequestDto");
 
-            }
-            catch (CustomerAlreadyExistException)
-            {
-                return StatusCode(400, "Customer Already Exist");
-
-            }
-            catch (DatabaseSaveException)
-            {
-                return StatusCode(500, "Internal Server Error");
-
-            }
-
+          var customerResponseDto = await _customerService.AddCustomer(customerRequestDto);
+          return StatusCode(200, customerResponseDto);
 
         }
 
@@ -96,24 +79,12 @@ namespace OrderAPI.Controllers
         public async Task<ActionResult<CustomerResponseDto>> Login([FromBody] CustomerRequestDto customerRequestDto)
         {
 
-            try
-            {
-                var customerResponseDto = await _customerService.AuthenticateCustomer(customerRequestDto);            
-                customerResponseDto.JwtToken = _jwtService.GenerateJWT();
-                return StatusCode(200, customerResponseDto);
-                
-            }
-            catch (InvalidCustomerRequestDtoException)
-            {
+            if (!ModelState.IsValid)
                 return StatusCode(400, "Invalid CustomerRequestDto");
 
-            }
-            catch (CustomerNotAuthenticated)
-            {
-                return StatusCode(403, "Customer Not Authenticated");
-
-            }
-
+            var customerResponseDto = await _customerService.AuthenticateCustomer(customerRequestDto);            
+            customerResponseDto.JwtToken = _jwtService.GenerateJWT();
+            return StatusCode(200, customerResponseDto);           
         }
 
     }

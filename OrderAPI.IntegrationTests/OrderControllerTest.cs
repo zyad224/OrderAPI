@@ -11,6 +11,8 @@ using OrderAPI.DAL.Interfaces;
 using OrderAPI.Dtos.CustomerDtos;
 using OrderAPI.Dtos.Dtos.OrderDtos;
 using OrderAPI.Services;
+using OrderAPI.Utilities.CustomExceptions.CustomerExceptions;
+using OrderAPI.Utilities.CustomExceptions.OrderExceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,15 +64,9 @@ namespace OrderAPI.IntegrationTests
             var orderRequestDto = new OrderRequestDto() { OrderId = "", CustomerId = customerResponseDto.CustomerId};
             orderRequestDto.ProductTypesQuantities.Add(new ProductTypeQuantityDto() { ProductType = ProductTypeDto.photoBook, Quantity = 1 });
 
-            var orderResponseDto = await orderController.PlaceOrder(orderRequestDto);
-
-            var requestResponseStatusCode = (orderResponseDto.Result as ObjectResult).StatusCode;
-            var requestResponse = (orderResponseDto.Result as ObjectResult).Value;
-
-
             //Assert
-            Assert.IsTrue(requestResponseStatusCode == 400);
-            Assert.IsTrue(requestResponse.ToString() == "Invalid OrderRequestDto Model");
+            Assert.ThrowsAsync<InvalidOrderRequestDtoException>(() => orderController.PlaceOrder(orderRequestDto));
+
 
         }
 
@@ -91,15 +87,9 @@ namespace OrderAPI.IntegrationTests
             var orderRequestDto = new OrderRequestDto() { OrderId = "1", CustomerId = "" };
             orderRequestDto.ProductTypesQuantities.Add(new ProductTypeQuantityDto() { ProductType = ProductTypeDto.photoBook, Quantity = 1 });
 
-            var orderResponseDto = await orderController.PlaceOrder(orderRequestDto);
-
-            var requestResponseStatusCode = (orderResponseDto.Result as ObjectResult).StatusCode;
-            var requestResponse = (orderResponseDto.Result as ObjectResult).Value;
-
-
             //Assert
-            Assert.IsTrue(requestResponseStatusCode == 400);
-            Assert.IsTrue(requestResponse.ToString() == "Invalid OrderRequestDto Model");
+            Assert.ThrowsAsync<InvalidOrderRequestDtoException>(() => orderController.PlaceOrder(orderRequestDto));
+
 
         }
         [Test]
@@ -118,15 +108,9 @@ namespace OrderAPI.IntegrationTests
 
             var orderRequestDto = new OrderRequestDto() { OrderId = "1", CustomerId = customerResponseDto.CustomerId};
 
-            var orderResponseDto = await orderController.PlaceOrder(orderRequestDto);
-
-            var requestResponseStatusCode = (orderResponseDto.Result as ObjectResult).StatusCode;
-            var requestResponse = (orderResponseDto.Result as ObjectResult).Value;
-
-
             //Assert
-            Assert.IsTrue(requestResponseStatusCode == 400);
-            Assert.IsTrue(requestResponse.ToString() == "Invalid OrderRequestDto Model");
+            Assert.ThrowsAsync<InvalidOrderRequestDtoException>(() => orderController.PlaceOrder(orderRequestDto));
+
 
         }
 
@@ -147,15 +131,9 @@ namespace OrderAPI.IntegrationTests
             var orderRequestDto = new OrderRequestDto() { OrderId = "1", CustomerId = customerResponseDto.CustomerId};
             orderRequestDto.ProductTypesQuantities.Add(new ProductTypeQuantityDto() { ProductType = ProductTypeDto.photoBook, Quantity = 0 });
 
-            var orderResponseDto = await orderController.PlaceOrder(orderRequestDto);
-
-            var requestResponseStatusCode = (orderResponseDto.Result as ObjectResult).StatusCode;
-            var requestResponse = (orderResponseDto.Result as ObjectResult).Value;
-
-
             //Assert
-            Assert.IsTrue(requestResponseStatusCode == 400);
-            Assert.IsTrue(requestResponse.ToString() == "Invalid OrderBin Width");
+            Assert.ThrowsAsync<InvalidOrderBinWidthException>(() => orderController.PlaceOrder(orderRequestDto));
+
 
         }
         [Test]
@@ -175,15 +153,9 @@ namespace OrderAPI.IntegrationTests
             var orderRequestDto = new OrderRequestDto() { OrderId = "1", CustomerId = customerResponseDto.CustomerId };
             orderRequestDto.ProductTypesQuantities.Add(new ProductTypeQuantityDto() { ProductType = ProductTypeDto.photoBook, Quantity = -1 });
 
-            var orderResponseDto = await orderController.PlaceOrder(orderRequestDto);
-
-            var requestResponseStatusCode = (orderResponseDto.Result as ObjectResult).StatusCode;
-            var requestResponse = (orderResponseDto.Result as ObjectResult).Value;
-
-
             //Assert
-            Assert.IsTrue(requestResponseStatusCode == 400);
-            Assert.IsTrue(requestResponse.ToString() == "Invalid OrderBin Width");
+            Assert.ThrowsAsync<InvalidOrderBinWidthException>(() => orderController.PlaceOrder(orderRequestDto));
+
 
         }
 
@@ -204,19 +176,14 @@ namespace OrderAPI.IntegrationTests
             var orderRequestDto = new OrderRequestDto() { OrderId = "1", CustomerId = "1" };
             orderRequestDto.ProductTypesQuantities.Add(new ProductTypeQuantityDto() { ProductType = ProductTypeDto.photoBook, Quantity = 1 });
 
-            var orderResponseDto = await orderController.PlaceOrder(orderRequestDto);
-
-            var requestResponseStatusCode = (orderResponseDto.Result as ObjectResult).StatusCode;
-            var requestResponse = (orderResponseDto.Result as ObjectResult).Value;
-
 
             //Assert
-            Assert.IsTrue(requestResponseStatusCode == 400);
-            Assert.IsTrue(requestResponse.ToString() == "Customer Does not Exist");
+            Assert.ThrowsAsync<CustomerNotExistException>(() => orderController.PlaceOrder(orderRequestDto));
+
 
         }
         [Test]
-        public async Task PlaceOrderEndPoint_OrderAlreadyExist_ValidCustomer_Returns_400_CustomerNotExist()
+        public async Task PlaceOrderEndPoint_OrderAlreadyExist_ValidCustomer_Returns_400_OrderAlreadyExist()
         {
 
             //Arrange
@@ -233,20 +200,14 @@ namespace OrderAPI.IntegrationTests
             orderRequestDto.ProductTypesQuantities.Add(new ProductTypeQuantityDto() { ProductType = ProductTypeDto.photoBook, Quantity = 1 });
             var orderResponseDto = await orderController.PlaceOrder(orderRequestDto);
 
-            var orderAlreadyExistResponseDto = await orderController.PlaceOrder(orderRequestDto);
-
-            var requestResponseStatusCode = (orderAlreadyExistResponseDto.Result as ObjectResult).StatusCode;
-            var requestResponse = (orderAlreadyExistResponseDto.Result as ObjectResult).Value;
-
-
             //Assert
-            Assert.IsTrue(requestResponseStatusCode == 400);
-            Assert.IsTrue(requestResponse.ToString() == "Order Already Exist");
+            Assert.ThrowsAsync<OrderAlreadyExistException>(() => orderController.PlaceOrder(orderRequestDto));
+
 
         }
 
         [Test]
-        public async Task PlaceOrderEndPoint_ValidOrder_ValidCustomer_Returns_200_CustomerNotExist()
+        public async Task PlaceOrderEndPoint_ValidOrder_ValidCustomer_Returns_200_OrderResponseDto()
         {
 
             //Arrange

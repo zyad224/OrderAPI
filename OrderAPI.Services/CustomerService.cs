@@ -18,39 +18,23 @@ namespace OrderAPI.Services
 
         public async Task<CustomerResponseDto> AddCustomer(CustomerRequestDto customerRequestDto)
         {
-            try
-            {
-                return await _customerDal.AddCustomer(customerRequestDto);
-            }
-            catch(Exception e)
-            {
-                throw e;
-            }
+           
+           return await _customerDal.AddCustomer(customerRequestDto);
+          
         }
 
         public async Task<CustomerResponseDto> AuthenticateCustomer(CustomerRequestDto customerRequestDto)
         {
-            try
-            {
-                return await _customerDal.AuthenticateCustomer(customerRequestDto);
-
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+            
+           return await _customerDal.AuthenticateCustomer(customerRequestDto);
+       
         }
 
         public async Task<CustomerResponseDto> GetCustomerById(string customerId)
         {
-            try
-            {
-                return await _customerDal.GetCustomerById(customerId);
-            }
-            catch(Exception e)
-            {
-                throw e;
-            }
+            
+           return await _customerDal.GetCustomerById(customerId);
+                       
         }
     }
 }

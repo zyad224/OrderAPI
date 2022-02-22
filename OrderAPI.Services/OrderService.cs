@@ -40,15 +40,9 @@ namespace OrderAPI.Services
 
             foreach (var product in productTypesQuantities)
             {
-                try
-                {
-                    orderBinWidth += CalculateBinWidthNeededForSpecificProduct(product, productBinWidthDict);
-
-                }
-                catch(ArgumentNullException e)
-                {
-                    throw e;
-                }
+               
+              orderBinWidth += CalculateBinWidthNeededForSpecificProduct(product, productBinWidthDict);
+                
             }
 
             return orderBinWidth;
@@ -57,55 +51,35 @@ namespace OrderAPI.Services
         private decimal CalculateBinWidthNeededForSpecificProduct(ProductTypeQuantityDto product, Dictionary<string,string> productBinWidthDict)
         {
             decimal binWidthNeeded = 0;
+          
+            productBinWidthDict.TryGetValue(product.ProductType.GetStringFromProductTypeDtoEnum(), out string binWidthPerProduct);
 
-            try
-            {
-                productBinWidthDict.TryGetValue(product.ProductType.GetStringFromProductTypeDtoEnum(), out string binWidthPerProduct);
+            if (product.ProductType == ProductTypeDto.mug)
+              {
+                 var mugStacksNedded = Math.Ceiling(Convert.ToDecimal(product.Quantity) / Convert.ToDecimal(4));
+                 binWidthNeeded = mugStacksNedded * decimal.Parse(binWidthPerProduct);
+              }
+            else
+              {
+                 binWidthNeeded = product.Quantity * decimal.Parse(binWidthPerProduct);
 
-                if (product.ProductType == ProductTypeDto.mug)
-                {
-                    var mugStacksNedded = Math.Ceiling(Convert.ToDecimal(product.Quantity) / Convert.ToDecimal(4));
-                    binWidthNeeded = mugStacksNedded * decimal.Parse(binWidthPerProduct);
-                }
-                else
-                {
-                    binWidthNeeded = product.Quantity * decimal.Parse(binWidthPerProduct);
-
-                }
-
-            }
-            catch(ArgumentNullException e)
-            {
-                throw e;
-            }
+              }
 
             return binWidthNeeded;
         }
 
         public async Task<OrderResponseDto> PlaceOrder(OrderRequestDto orderRequestDto, decimal requiredBinWidth)
         {
-          
-            try
-            {
-                return await _orderDal.PlaceOrder(orderRequestDto, requiredBinWidth);
-
-            }
-            catch(Exception e)
-            {
-                throw e;
-            }
+                    
+          return await _orderDal.PlaceOrder(orderRequestDto, requiredBinWidth);
+            
         }
 
         public async Task<OrderResponseDto> OrderDetail(string orderId)
         {
-            try
-            {
-                return await _orderDal.OrderDetail(orderId);
-            }
-            catch(Exception e)
-            {
-                throw e;
-            }
+           
+          return await _orderDal.OrderDetail(orderId);
+                     
         }
 
     }
